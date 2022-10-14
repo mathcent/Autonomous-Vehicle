@@ -1,0 +1,1025 @@
+#VRML_SIM R2022a utf8
+WorldInfo {
+  ERP 0.6
+  basicTimeStep 10
+  lineScale 1
+  contactProperties [
+    ContactProperties {
+      coulombFriction [
+        8
+      ]
+      softCFM 1e-05
+      bumpSound ""
+      rollSound ""
+      slideSound ""
+    }
+    ContactProperties {
+      material2 "CitroenCZeroWheels"
+      coulombFriction [
+        8
+      ]
+      softCFM 1e-05
+      bumpSound ""
+      rollSound ""
+      slideSound ""
+    }
+    ContactProperties {
+      material2 "ToyotaPriusWheels"
+      coulombFriction [
+        8
+      ]
+      softCFM 1e-05
+      bumpSound ""
+      rollSound ""
+      slideSound ""
+    }
+    ContactProperties {
+      material2 "LincolnMKZWheels"
+      coulombFriction [
+        8
+      ]
+      softCFM 1e-05
+      bumpSound ""
+      rollSound ""
+      slideSound ""
+    }
+    ContactProperties {
+      material2 "RangeRoverSportSVRWheels"
+      coulombFriction [
+        8
+      ]
+      softCFM 1e-05
+      bumpSound ""
+      rollSound ""
+      slideSound ""
+    }
+    ContactProperties {
+      material2 "TruckWheels"
+      coulombFriction [
+        8
+      ]
+      softCFM 1e-05
+      bumpSound ""
+      rollSound ""
+      slideSound ""
+    }
+  ]
+}
+Viewpoint {
+  orientation -0.32197557234926194 0.5886649846186998 0.7414885479184632 1.2976791292525247
+  position -178.58319919861952 -199.73836363855804 15.955782901237228
+  near 1
+  lensFlare LensFlare {
+  }
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+Fog {
+  color 0.3607843137254902 0.3607843137254902 0.3607843137254902
+  visibilityRange 1200
+}
+SumoInterface {
+  gui FALSE
+}
+DEF GROUND Solid {
+  boundingObject DEF GROUND_PLANE Plane {
+    size 2000 2000
+  }
+  locked TRUE
+}
+DEF GROUND_SHAPE Solid {
+  translation 0 0 -0.02
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.8 0.8 0.8
+        baseColorMap ImageTexture {
+          url [
+            "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/vehicles/worlds/textures/ground.jpg"
+          ]
+        }
+        roughness 0.5
+        metalness 0
+        textureTransform TextureTransform {
+          scale 500 500
+        }
+      }
+      geometry DEF GROUND_PLANE Plane {
+        size 2000 2000
+      }
+    }
+  ]
+  name "solid(1)"
+  boundingObject USE GROUND_PLANE
+  locked TRUE
+}
+TeslaModel3 {
+  hidden position_0_0 -2.1891727150447584e-06
+  hidden position2_0_0 0.18116273080160616
+  hidden position_0_1 2.1888684217320915e-06
+  hidden position2_0_1 0.17401866851682687
+  hidden position_0_2 4.916524977552215e-05
+  hidden position_0_3 3.39445006408576e-05
+  hidden rotation_1 -0.09008864948421688 -0.9918506362065735 0.09009079137584147 1.578978858906131
+  hidden rotation_2 0.08657225760700435 -0.9924767590126544 -0.086574401716464 1.5783478024696862
+  hidden rotation_3 -2.4582632911342987e-05 -0.9999999993956945 2.4582624877857374e-05 1.5707960006042712
+  hidden rotation_4 1.6972255863613933e-05 -0.9999999997119426 -1.6972250317169973e-05 1.5707960002880181
+  translation -171.45095586899234 -187.3889958147536 0.2730010787805736
+  rotation -1.369197038342359e-05 -0.9999925695641261 -0.0038549486464332754 0.007040542669003677
+  controller "my_controller"
+  sensorsSlotFront [
+    Camera {
+      translation -0.897559 0.11 1.15628
+      rotation -0.9962744139858737 0.08623973583554079 3.4619814385709306e-07 -5.307179586466759e-06
+      width 1080
+      height 720
+      ambientOcclusionRadius 1
+    }
+  ]
+}
+RoadIntersection {
+  translation 105 93 0.02
+  rotation 0 0 1 0.785398
+  name "road intersection(2)"
+  id "27"
+  connectedRoadIDs [
+    "12"
+    "20"
+    "17"
+    "16"
+  ]
+  roadsWidth 12
+  startRoadsLength [
+    13.5
+  ]
+  startRoadsNumberOfLanes 3
+  startRoadsStartLine []
+  startRoadsLine [
+    RoadLine {
+    }
+    RoadLine {
+    }
+  ]
+  startRoadBorder FALSE
+}
+CurvedRoadSegment {
+  translation -4.5 -4.5 0.02
+  rotation 0 0 1 3.14156
+  name "road(8)"
+  id "8"
+  startJunction "42"
+  endJunction "41"
+  width 12
+  numberOfLanes 3
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  curvatureRadius 40.5
+}
+StraightRoadSegment {
+  translation -4.5 -45 0.02
+  name "road(9)"
+  id "9"
+  startJunction "42"
+  endJunction "10"
+  width 12
+  numberOfLanes 3
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  length 69
+}
+CurvedRoadSegment {
+  translation 64.5 -4.5 0.02
+  rotation 0 0 1 -1.5708
+  name "road(10)"
+  id "10"
+  startJunction "45"
+  endJunction "25"
+  width 12
+  numberOfLanes 3
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  curvatureRadius 40.5
+}
+CurvedRoadSegment {
+  translation 75 -97.5 0.02
+  rotation 0 0 1 -1.5708
+  name "road(11)"
+  id "11"
+  startJunction "35"
+  endJunction "36"
+  width 12
+  numberOfLanes 3
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  curvatureRadius 90
+}
+StraightRoadSegment {
+  translation 85.5 93 0.02
+  rotation 0 0 1 3.14156
+  name "road(12)"
+  id "12"
+  startJunction "27"
+  endJunction "28"
+  width 12
+  numberOfLanes 3
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  length 9
+}
+StraightRoadSegment {
+  translation 75 -187.5 0.02
+  rotation 0 0 -1 3.14156
+  name "road(13)"
+  id "13"
+  startJunction "36"
+  width 12
+  numberOfLanes 3
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  length 250
+}
+StraightRoadSegment {
+  translation 165 52.5 0.02
+  rotation 0 0 1 -1.5708
+  name "road(14)"
+  id "14"
+  startJunction "34"
+  endJunction "35"
+  width 12
+  numberOfLanes 3
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  length 150
+}
+StraightRoadSegment {
+  translation 64.5 231 0.02
+  rotation 0 0 1 3.14156
+  name "road(15)"
+  id "15"
+  startJunction "32"
+  width 12
+  numberOfLanes 3
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  length 200
+}
+StraightRoadSegment {
+  translation 105 112.5 0.02
+  rotation 0 0 1 1.57079
+  name "road(16)"
+  id "16"
+  startJunction "27"
+  endJunction "33"
+  width 12
+  numberOfLanes 3
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  length 78
+}
+StraightRoadSegment {
+  translation 105 -4.5 0.02
+  rotation 0 0 1 1.57079
+  name "road(17)"
+  id "17"
+  startJunction "45"
+  endJunction "27"
+  width 12
+  numberOfLanes 3
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  length 78
+}
+CurvedRoadSegment {
+  translation 76.5 133.5 0.02
+  rotation 0 0 -1 3.14156
+  name "road(18)"
+  id "18"
+  startJunction "28"
+  endJunction "29"
+  width 12
+  numberOfLanes 3
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  curvatureRadius 40.5
+}
+CurvedRoadSegment {
+  translation 64.5 190.5 0.02
+  name "road(19)"
+  id "19"
+  startJunction "32"
+  endJunction "33"
+  width 12
+  numberOfLanes 3
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  curvatureRadius 40.5
+}
+CurvedRoadSegment {
+  translation 124.5 52.5 0.02
+  name "road(20)"
+  id "20"
+  startJunction "27"
+  endJunction "34"
+  width 12
+  numberOfLanes 3
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  curvatureRadius 40.5
+}
+CurvedRoadSegment {
+  translation -4.5 133.5 0.02
+  name "road(21)"
+  id "21"
+  startJunction "30"
+  endJunction "29"
+  width 12
+  numberOfLanes 3
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  curvatureRadius 40.5
+}
+CurvedRoadSegment {
+  translation -4.5 133.5 0.02
+  rotation 0 0 1 1.5708
+  name "road(22)"
+  id "22"
+  startJunction "31"
+  endJunction "30"
+  width 12
+  numberOfLanes 3
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  curvatureRadius 40.5
+}
+StraightRoadSegment {
+  translation -45 -4.5 0.03
+  rotation 0 0 -1 -1.5708
+  name "road(23)"
+  id "23"
+  startJunction "26"
+  endJunction "41"
+  width 12
+  numberOfLanes 3
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  length 69.1
+}
+StraightRoadSegment {
+  translation -45 64.5 0.02
+  rotation 0 0 1 1.5708
+  name "road(24)"
+  id "24"
+  startJunction "23"
+  endJunction "0"
+  width 12
+  numberOfLanes 3
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  length 69
+}
+CrossRoadsTrafficLight {
+  translation 45 -45 0
+}
+SimpleBuilding {
+  translation 97.8047 -149.501 0
+  name "building(2)"
+  floorHeight 5
+  wallType "brick building"
+  roofType "gravel"
+  roofShape "flat roof"
+}
+SimpleBuilding {
+  translation 117.415 -135.778 0
+  name "building(3)"
+  floorHeight 5
+  wallType "brick building"
+  roofType "gravel"
+  roofShape "flat roof"
+}
+SimpleBuilding {
+  translation 126.106 -115.963 0
+  name "building(4)"
+  floorHeight 5
+  wallType "brick building"
+  roofType "gravel"
+  roofShape "flat roof"
+}
+SimpleBuilding {
+  translation 139.996 -95.9459 0
+  name "building(5)"
+  floorHeight 5
+  wallType "brick building"
+  roofType "gravel"
+  roofShape "flat roof"
+}
+Forest {
+  rotation 0 0 1 -1.5608
+  shape [
+    -105.8 -117
+    -99 -150.8
+    -69.7 -174
+    -186 -176.3
+    -205.3 -140.5
+    -195 -117
+  ]
+  density 0.3
+}
+Forest {
+  rotation 0 0 1 -1.5608
+  shape [
+    -80 -118
+    -73.7 -141
+    -49 -153
+    64.3 -153
+    12 -117
+  ]
+}
+Forest {
+  rotation 0 0 1 -1.5608
+  shape [
+    -7.6 116.2
+    72.4 116.5
+    174.5 99.2
+    175.8 191.2
+    -56.5 122.9
+  ]
+}
+SimpleTree {
+  translation -86.3803 -3.69635 0
+}
+SimpleTree {
+  translation -86.3803 -18.9264 0
+  name "tree(1)"
+}
+SimpleTree {
+  translation -43.078 -123.055 0
+  name "tree(2)"
+}
+SimpleTree {
+  translation -22.318 -123.055 0
+  name "tree(3)"
+}
+SimpleTree {
+  translation 1.70201 -123.055 0
+  name "tree(4)"
+}
+SimpleTree {
+  translation 20.4431 130.5 0
+  name "tree(5)"
+}
+SimpleTree {
+  translation 53.4842 123.995 0
+  rotation 0 0 1 5.49779
+  name "tree(6)"
+}
+SimpleTree {
+  translation 83.0494 196.584 0
+  name "tree(7)"
+}
+SimpleTree {
+  translation -33.9112 179.976 0
+  rotation 0 -1 0 6.28319
+  name "tree(8)"
+}
+SimpleTree {
+  translation -59.8734 114.947 0
+  name "tree(9)"
+}
+SimpleTree {
+  translation -22.2335 150.308 0
+  rotation 0 -1 0 6.28319
+  name "tree(10)"
+}
+SimpleTree {
+  translation 16.4343 145.045 0
+  name "tree(11)"
+}
+SimpleTree {
+  translation 89.3742 77.3517 0
+  name "tree(12)"
+}
+SimpleTree {
+  translation 89.3742 59.8317 0
+  name "tree(13)"
+}
+SimpleTree {
+  translation 89.3742 42.5017 0
+  name "tree(14)"
+}
+SimpleTree {
+  translation 89.3742 24.6817 0
+  name "tree(15)"
+}
+SimpleTree {
+  translation 89.3742 6.71175 0
+  name "tree(16)"
+}
+SimpleTree {
+  translation 89.3742 -10.6583 0
+  name "tree(17)"
+}
+SimpleTree {
+  translation 137.36 -53.2389 0
+  name "tree(18)"
+}
+SimpleTree {
+  translation 122.111 -32.1201 0
+  name "tree(19)"
+}
+SimpleTree {
+  translation 110.762 -29.023 0
+  name "tree(20)"
+}
+SimpleTree {
+  translation 90.773 -54.456 0
+  name "tree(21)"
+}
+SimpleTree {
+  translation 40.292 -105.225 0
+  name "tree(22)"
+}
+SimpleTree {
+  translation -29.8047 -59.5626 0
+  name "tree(23)"
+}
+SimpleTree {
+  translation -56.111 -34.7085 0
+  name "tree(24)"
+}
+SimpleTree {
+  translation -86.3803 -38.0164 0
+  name "tree(25)"
+}
+SimpleTree {
+  translation -86.3803 9.02365 0
+  name "tree(26)"
+}
+CautionSign {
+  translation -91.9275 48.9391 0
+  signBoards [
+    CautionPanel {
+      translation 0 0 -0.17
+      signImage [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/objects/traffic/protos/textures/signs/us/turn_left.jpg"
+      ]
+    }
+  ]
+}
+CautionSign {
+  translation 84.1154 -26.9475 0
+  rotation 0 0 1 0.6545
+  name "caution sign(4)"
+  signBoards [
+    CautionPanel {
+      translation 0 0 -0.17
+      signImage [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/objects/traffic/protos/textures/signs/us/cross_roads.jpg"
+      ]
+    }
+  ]
+}
+CautionSign {
+  translation -5.43669 -34.1146 0
+  rotation 0 0 1 -0.5236
+  name "caution sign(5)"
+  signBoards [
+    CautionPanel {
+      translation 0 0 -0.17
+      signImage [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/objects/traffic/protos/textures/signs/us/turn_right.jpg"
+      ]
+    }
+  ]
+}
+OrderSign {
+  translation -67.6589 34.4983 0
+  rotation 0 0 1 3.14159
+  signBoards [
+    OrderPanel {
+      translation 0.026 0 -0.175
+      signImage [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/objects/traffic/protos/textures/signs/no_right_turn.jpg"
+      ]
+    }
+  ]
+}
+StopSign {
+  translation -34.6012 34.2884 0
+  rotation 0 0 1 -1.5708
+}
+SpeedLimitSign {
+  translation -113.192 20.4404 0
+  rotation 0 0 1 0.9163
+  signBoards [
+    SpeedLimitPanel {
+      translation 0.023 0 0
+      signImage [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/objects/traffic/protos/textures/signs/us/speed_limit_55.jpg"
+      ]
+    }
+  ]
+}
+SpeedLimitSign {
+  translation 87.1538 -50.335 0
+  rotation 0 0 1 -3.14159
+  name "speed limit(3)"
+  signBoards [
+    SpeedLimitPanel {
+      translation 0.023 0 0
+      signImage [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/objects/traffic/protos/textures/signs/us/speed_limit_65.jpg"
+      ]
+    }
+  ]
+}
+SpeedLimitSign {
+  translation 31.0289 -34.4459 0
+  name "speed limit(4)"
+  signBoards [
+    SpeedLimitPanel {
+      translation 0.023 0 0
+      signImage [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/objects/traffic/protos/textures/signs/us/one_way_sign_left.jpg"
+      ]
+    }
+  ]
+}
+TrafficCone {
+  translation 33.974044815728654 -53.76080002141121 -0.004076718672611279
+  rotation -0.0002731636563818449 0.9999998490525936 0.00047673515367814 0.013690792761013034
+  physics Physics {
+    density -1
+    mass 1
+  }
+}
+TrafficCone {
+  translation 33.96964481572866 -51.435000021411206 -0.004076718672611279
+  rotation -0.0002731636563818449 0.9999998490525936 0.00047673515367814 0.013690792761013034
+  name "traffic cone(1)"
+  physics Physics {
+    density -1
+    mass 1
+  }
+}
+TrafficCone {
+  translation 33.953544815728655 -48.9544000214112 -0.004076718672611279
+  rotation -0.0002731636563818224 0.9999998490525936 0.00047673515367808897 0.013690792761013034
+  name "traffic cone(2)"
+  physics Physics {
+    density -1
+    mass 1
+  }
+}
+TrafficCone {
+  translation 33.71714481572865 -45.7234000214112 -0.004076718672611279
+  rotation -0.0002731636563818449 0.9999998490525936 0.00047673515367814 0.013690792761013034
+  name "traffic cone(3)"
+  physics Physics {
+    density -1
+    mass 1
+  }
+}
+AdvertisingBoard {
+  translation 50.8635 -59.7458 0
+  rotation 0 0 1 2.61799
+  backTexture []
+  displayBackLight TRUE
+  displayWidth 8
+  displayHeight 6
+  frameThickness 0.9
+  frameColor 0.52549 0.52549 0.52549
+  poleNumber 2
+  poleHeight 11
+  baseRatio 5.8
+}
+HighwayPole {
+  translation 118.15 72.97 0
+  rotation 0 0 1 -1.5707953071795862
+  name "highway pole(1)"
+  stand 2
+  height 8
+  length 25
+  thickness 0.3
+  curveRadius 0.5
+  rightHorizontalSigns [
+    HighwaySign {
+      translation 0 -3.95 0
+      height 4
+      length 5.5
+      color 0.6 0.6 0.6
+    }
+  ]
+  rightVerticalSigns []
+  leftVerticalSigns [
+    HighwaySign {
+      translation 0 0 0.58
+      name "highway sign(1)"
+      height 2.5
+      length 3
+      color 0.6 0.6 0.6
+      texture [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/objects/traffic/protos/textures/highway_sign_la_ciotat.jpg"
+      ]
+    }
+  ]
+}
+Crossroad {
+  translation 76.500107 93 0
+  id "28"
+  shape []
+  connectedRoadIDs [
+    "18"
+    "12"
+  ]
+}
+Crossroad {
+  translation 36 133.50015 0
+  name "crossroad(1)"
+  id "29"
+  shape []
+  connectedRoadIDs [
+    "21"
+    "18"
+  ]
+}
+Crossroad {
+  translation -4.500405 174 0
+  name "crossroad(2)"
+  id "30"
+  shape []
+  connectedRoadIDs [
+    "22"
+    "21"
+  ]
+}
+Crossroad {
+  translation -45.000035 133.49978 0
+  name "crossroad(3)"
+  id "31"
+  shape []
+  connectedRoadIDs [
+    "24"
+    "22"
+  ]
+}
+Crossroad {
+  translation 64.499851 231 0
+  name "crossroad(4)"
+  id "32"
+  shape []
+  connectedRoadIDs [
+    "15"
+    "19"
+  ]
+}
+Crossroad {
+  translation 104.99975 190.50007 0
+  name "crossroad(5)"
+  id "33"
+  shape []
+  connectedRoadIDs [
+    "16"
+    "19"
+  ]
+}
+Crossroad {
+  translation 165 52.500074 0
+  name "crossroad(6)"
+  id "34"
+  shape []
+  connectedRoadIDs [
+    "20"
+    "14"
+  ]
+}
+Crossroad {
+  translation 165.00028 -97.499835 0
+  name "crossroad(7)"
+  id "35"
+  shape []
+  connectedRoadIDs [
+    "11"
+    "14"
+  ]
+}
+Crossroad {
+  translation 75 -187.5 0
+  name "crossroad(8)"
+  id "36"
+  shape []
+  connectedRoadIDs [
+    "13"
+    "11"
+  ]
+}
+Crossroad {
+  translation 4.5 -104.99975 0
+  name "crossroad(9)"
+  id "37"
+  shape []
+  connectedRoadIDs [
+    "3"
+    "4"
+  ]
+}
+Crossroad {
+  translation -64.5 -105 0
+  name "crossroad(10)"
+  id "38"
+  shape []
+  connectedRoadIDs [
+    "2"
+    "3"
+  ]
+}
+Crossroad {
+  translation -104.99987 -64.499926 0
+  name "crossroad(11)"
+  id "39"
+  shape []
+  connectedRoadIDs [
+    "1"
+    "2"
+  ]
+}
+Crossroad {
+  translation -105 4.4999794 0
+  name "crossroad(12)"
+  id "40"
+  shape []
+  connectedRoadIDs [
+    "0"
+    "1"
+  ]
+}
+Crossroad {
+  translation -45.000015 -4.4999256 0
+  name "crossroad(13)"
+  id "41"
+  shape []
+  connectedRoadIDs [
+    "23"
+    "8"
+  ]
+}
+Crossroad {
+  translation -4.5 -45 0
+  name "crossroad(14)"
+  id "42"
+  shape []
+  connectedRoadIDs [
+    "9"
+    "8"
+  ]
+}
+Crossroad {
+  translation 45 4.5000744 0
+  name "crossroad(15)"
+  id "43"
+  shape []
+  connectedRoadIDs [
+    "5"
+    "6"
+  ]
+}
+Crossroad {
+  translation 4.4998512 45.00011 0
+  name "crossroad(16)"
+  id "44"
+  shape []
+  connectedRoadIDs [
+    "7"
+    "6"
+  ]
+}
+Crossroad {
+  translation 105 -4.4999256 0
+  name "crossroad(17)"
+  id "45"
+  shape []
+  connectedRoadIDs [
+    "10"
+    "17"
+  ]
+}

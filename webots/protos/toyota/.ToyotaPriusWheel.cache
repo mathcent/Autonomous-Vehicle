@@ -1,0 +1,11 @@
+Webots Proto Cache File version 1.5
+protoFileHash: 868f600f09e48ad243f66a638e0d09c1
+needsRobotAncestor: 0
+baseType: Slot
+slotType: vehicle\swheel
+parameters: name,physics,boundingObject,wheelSide,tireRadius
+tags: 
+license:  Copyright Cyberbotics Ltd. Licensed for use only with Webots.
+licenseUrl:  https://cyberbotics.com/webots_assets_license
+documentationUrl: 
+info: Model\sof\sthe\sToyota\sPrius\swheels\susing\sthe\sgeneric\sVehicleWheel\sproto\nincluding\sphysic\sproperties\sand\stextures\nThe\scontactMaterial\sis\s"ToyotaPriusWheels"\nSize:\s195/65\sR15\nThis\smodel\swas\ssponsored\sby\sthe\sCTI\sproject\sRO2IVSim\s(http://transport.epfl.ch/simulator-for-mobile-robots-and-intelligent-vehicles).
