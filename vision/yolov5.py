@@ -98,9 +98,18 @@ def post_process(input_image, outputs):
 		top = box[1]
 		width = box[2]
 		height = box[3]
-		cv2.rectangle(input_image, (left, top), (left + width, top + height), BLUE, 3*THICKNESS)
+		cv2.rectangle(input_image, (left, top), (left + width, top + height), BLUE, 2*THICKNESS)
 		label = "{}:{:.2f}".format(classes[class_ids[i]], confidences[i])
 		draw_label(input_image, label, left, top)
+		
+		if (classes[class_ids[i]]) == "traffic light":
+			print(classes[class_ids[i]], confidences[i])
+
+		if (classes[class_ids[i]]) == "stop sign":
+			print(classes[class_ids[i]], confidences[i])
+
+		if (classes[class_ids[i]]) == "car":
+			print(classes[class_ids[i]], confidences[i])
 
 	return input_image
 
@@ -114,6 +123,9 @@ if __name__ == '__main__':
 
 	# Load image.
 	frame = cv2.imread('sample.jpg')
+
+	# Load video.
+	#frame = cv2.VideoCapture('teste2.mp4')
 
 	# Give the weight files to the model and load the network using them.
 	modelWeights = "models/yolov5s.onnx"
