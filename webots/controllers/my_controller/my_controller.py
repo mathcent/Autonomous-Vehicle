@@ -3,16 +3,6 @@ from controller import Robot, Camera
 import cv2
 import numpy as np
 
-robot = Robot()
-camera = Camera("camera")
-
-timestep = int(robot.getBasicTimeStep())
-camera.enable(timestep)
-camera.wb_camera_get_image()
-while robot.step(timestep) != -1:
-    
-    pass
-
 
 # Constants.
 INPUT_WIDTH = 640
@@ -31,6 +21,8 @@ BLACK  = (0,0,0)
 BLUE   = (255,178,50)
 YELLOW = (0,255,255)
 RED = (0,0,255)
+
+print('teste')
 
 
 def draw_label(input_image, label, left, top):
@@ -129,30 +121,53 @@ def post_process(input_image, outputs):
 
 if __name__ == '__main__':
 	# Load class names.
+	
+	robot = Robot()
+	camera = Camera("camera")
+	timestep = int(robot.getBasicTimeStep())
+	camera.enable(timestep)
+	image = camera.getImage()
+	
 	classesFile = "coco.names"
 	classes = None
 	with open(classesFile, 'rt') as f:
 		classes = f.read().rstrip('\n').split('\n')
-
-	# Load image.
-	frame = cv2.imread(camera.wb_camera_get_image())
-
-	# Load video.
-	#frame = cv2.VideoCapture('video_teste.mp4')
-
+		
 	# Give the weight files to the model and load the network using them.
 	modelWeights = "models/yolov5s.onnx"
 	net = cv2.dnn.readNet(modelWeights)
 
-	# Process image.
-	detections = pre_process(frame, net)
-	img = post_process(frame.copy(), detections)
-
-	# Put efficiency information. The function getPerfProfile returns the overall time for inference(t) and the timings for each of the layers(in layersTimes)
-	t, _ = net.getPerfProfile()
-	label = 'Inference time: %.2f ms' % (t * 1000.0 / cv2.getTickFrequency())
-	print(label)
-	cv2.putText(img, label, (20, 40), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
-
-	cv2.imshow('Output', img)
-	cv2.waitKey(0)
+	# Load image.
+	#frame = cv2.imread(image)
+	
+	while (robot.step(timestep) != -1):
+                cameraData = camera.getImage();
+                #imageRGB = [cameraData[i] for i in range(0, camera.getHeight()*camera.getWidth()*3)]
+                #imageRGB = bytes(imageRGB)
+                
+                #convertendo bytes para np array
+                image = np.frombuffer(cameraData, np.uint8).reshape((camera.getHeight(), camera.getWidth(), 4))
+                print(image.shape)
+                
+                #Elimina o quarto canal da imagem
+                image = image[:, :, :3]
+                
+                print(image.shape)
+            	
+                cv2.imwrite("frame.png", image)
+                
+                # Load video.
+                #frame = cv2.VideoCapture('video_teste.mp4')
+                
+                # Process image.
+                detections = pre_process(image, net)
+                img = post_process(image.copy(), detections)
+                
+                # Put efficiency information. The function getPerfProfile returns the overall time for inference(t) and the timings for each of the layers(in layersTimes)
+                t, _ = net.getPerfProfile()
+                label = 'Inference time: %.2f ms' % (t * 1000.0 / cv2.getTickFrequency())
+                print(label)
+                cv2.putText(img, label, (20, 40), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
+                
+                cv2.imshow('Output', img)
+                cv2.waitKey(1)

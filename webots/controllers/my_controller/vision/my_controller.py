@@ -8,7 +8,7 @@ camera = Camera("camera")
 
 timestep = int(robot.getBasicTimeStep())
 camera.enable(timestep)
-image = camera.wb_camera_get_image()
+image = camera.getImage()
 while robot.step(timestep) != -1:
 
     pass

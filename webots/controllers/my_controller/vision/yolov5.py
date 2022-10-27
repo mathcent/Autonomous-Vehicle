@@ -116,30 +116,43 @@ def post_process(input_image, outputs):
 
 if __name__ == '__main__':
 	# Load class names.
+	count = 0
+
+	# Give the weight files to the model and load the network using them.
+	modelWeights = "models/yolov5s.onnx"
+	net = cv2.dnn.readNet(modelWeights)
+
 	classesFile = "coco.names"
 	classes = None
 	with open(classesFile, 'rt') as f:
 		classes = f.read().rstrip('\n').split('\n')
 
 	# Load image.
-	#frame = cv2.imread('sample.jpg')
+	#frame = cv2.imread('capture_webots.png')
 
 	# Load video.
-	frame = cv2.VideoCapture('video_teste.mp4')
+	cap = cv2.VideoCapture('teste2.mp4')
 
-	# Give the weight files to the model and load the network using them.
-	modelWeights = "models/yolov5s.onnx"
-	net = cv2.dnn.readNet(modelWeights)
+	cv2.namedWindow('Output')
 
-	# Process image.
-	detections = pre_process(frame, net)
-	img = post_process(frame.copy(), detections)
+	while True:
+		ret, frame = cap.read()
+		count += 1
+		print(ret)
+		if not ret:
+			break
 
-	# Put efficiency information. The function getPerfProfile returns the overall time for inference(t) and the timings for each of the layers(in layersTimes)
-	t, _ = net.getPerfProfile()
-	label = 'Inference time: %.2f ms' % (t * 1000.0 / cv2.getTickFrequency())
-	print(label)
-	cv2.putText(img, label, (20, 40), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
+		cv2.imwrite("frame.png", frame)
 
-	cv2.imshow('Output', img)
-	cv2.waitKey(0)
+		# Process image.
+		detections = pre_process(frame, net)
+		img = post_process(frame.copy(), detections)
+
+		# Put efficiency information. The function getPerfProfile returns the overall time for inference(t) and the timings for each of the layers(in layersTimes)
+		t, _ = net.getPerfProfile()
+		label = 'Inference time: %.2f ms' % (t * 1000.0 / cv2.getTickFrequency())
+		print(label)
+		cv2.putText(img, label, (20, 40), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
+
+		cv2.imshow('Output', img)
+		cv2.waitKey(1)
