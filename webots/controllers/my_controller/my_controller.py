@@ -1,5 +1,8 @@
 
-from controller import Robot, Camera
+from controller import Camera
+from vehicle import Driver
+from sklearn.linear_model import HuberRegressor, Ridge
+from matplotlib import pyplot as plt
 import cv2
 import numpy as np
 
@@ -22,7 +25,7 @@ BLUE   = (255,178,50)
 YELLOW = (0,255,255)
 RED = (0,0,255)
 
-print('teste')
+
 
 
 def draw_label(input_image, label, left, top):
@@ -90,7 +93,7 @@ def post_process(input_image, outputs):
 				top = int((cy - h/2) * y_factor)
 				width = int(w * x_factor)
 				height = int(h * y_factor)
-			  
+				
 				box = np.array([left, top, width, height])
 				boxes.append(box)
 
@@ -103,12 +106,27 @@ def post_process(input_image, outputs):
 		top = box[1]
 		width = box[2]
 		height = box[3]
-		cv2.rectangle(input_image, (left, top), (left + width, top + height), BLUE, 2*THICKNESS)
+		
+		right = left + width
+		bottom = top + height
+		cropped_image = input_image[top:bottom, left:right] # Slicing to crop the image
+		cv2.imshow("cropped", cropped_image)
+		cv2.waitKey(1)
+		
+		#cv2.rectangle(input_image, (left, top), (left + width, top + height), BLUE, 2*THICKNESS)
+				
 		label = "{}:{:.2f}".format(classes[class_ids[i]], confidences[i])
 		draw_label(input_image, label, left, top)
 		
 		if (classes[class_ids[i]]) == "traffic light":
 			print(classes[class_ids[i]], confidences[i])
+			print((right-left)*(bottom-top))
+			color = ('b','g','r')
+			for i,col in enumerate(color):
+            			histr = cv2.calcHist([cropped_image],[i],None,[256],[0,256])
+            			plt.plot(histr,color = col)
+            			plt.xlim([0,256])
+			#plt.show()
 
 		if (classes[class_ids[i]]) == "stop sign":
 			print(classes[class_ids[i]], confidences[i])
@@ -122,25 +140,28 @@ def post_process(input_image, outputs):
 if __name__ == '__main__':
 	# Load class names.
 	
-	robot = Robot()
+	driver = Driver()
 	camera = Camera("camera")
-	timestep = int(robot.getBasicTimeStep())
+	timestep = int(driver.getBasicTimeStep())
 	camera.enable(timestep)
 	image = camera.getImage()
-	
 	classesFile = "coco.names"
 	classes = None
+	print(timestep)
+	
 	with open(classesFile, 'rt') as f:
 		classes = f.read().rstrip('\n').split('\n')
 		
 	# Give the weight files to the model and load the network using them.
-	modelWeights = "models/yolov5s.onnx"
+	modelWeights = "models/yolov5m.onnx"
 	net = cv2.dnn.readNet(modelWeights)
 
 	# Load image.
 	#frame = cv2.imread(image)
+	driver.setCruisingSpeed(50)
+	print(driver.step())
 	
-	while (robot.step(timestep) != -1):
+	while (driver.step() != -1):
                 cameraData = camera.getImage();
                 #imageRGB = [cameraData[i] for i in range(0, camera.getHeight()*camera.getWidth()*3)]
                 #imageRGB = bytes(imageRGB)
