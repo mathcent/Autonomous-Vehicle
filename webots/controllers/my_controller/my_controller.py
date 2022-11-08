@@ -196,7 +196,7 @@ if __name__ == '__main__':
                     t, _ = net.getPerfProfile()
                     label = 'Inference time: %.2f ms' % (t * 1000.0 / cv2.getTickFrequency())
                     print(label)
-                    #cv2.putText(img, label, (20, 40), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
+                    cv2.putText(img, label, (20, 40), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
                     
                     cv2.imshow('Output', img)
                     cv2.waitKey(1)
