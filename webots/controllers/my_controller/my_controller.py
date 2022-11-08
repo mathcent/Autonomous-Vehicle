@@ -113,7 +113,7 @@ def post_process(input_image, outputs):
 		cv2.imshow("cropped", cropped_image)
 		cv2.waitKey(1)
 		
-		#cv2.rectangle(input_image, (left, top), (left + width, top + height), BLUE, 2*THICKNESS)
+		cv2.rectangle(input_image, (left, top), (left + width, top + height), BLUE, 2*THICKNESS)
 				
 		label = "{}:{:.2f}".format(classes[class_ids[i]], confidences[i])
 		draw_label(input_image, label, left, top)
@@ -122,24 +122,30 @@ def post_process(input_image, outputs):
 			print(classes[class_ids[i]], confidences[i])
 			print((right-left)*(bottom-top))
 			color = ('b','g','r')
+			ax.clear()
 			for i,col in enumerate(color):
             			histr = cv2.calcHist([cropped_image],[i],None,[256],[0,256])
-            			plt.plot(histr,color = col)
+            			ax.plot(histr,color = col)
             			plt.xlim([0,256])
-			#plt.show()
+			plt.pause(0.1)
 
 		if (classes[class_ids[i]]) == "stop sign":
 			print(classes[class_ids[i]], confidences[i])
+			print((right-left)*(bottom-top))
 
 		if (classes[class_ids[i]]) == "car":
 			print(classes[class_ids[i]], confidences[i])
-
+			print((right-left)*(bottom-top))
+		if (classes[class_ids[i]]) == "person":
+			print(classes[class_ids[i]], confidences[i])
+			print((right-left)*(bottom-top))
 	return input_image
 
 
 if __name__ == '__main__':
 	# Load class names.
-	
+	i = 0
+	fig, ax = plt.subplots()
 	driver = Driver()
 	camera = Camera("camera")
 	timestep = int(driver.getBasicTimeStep())
@@ -147,7 +153,7 @@ if __name__ == '__main__':
 	image = camera.getImage()
 	classesFile = "coco.names"
 	classes = None
-	print(timestep)
+	#print(timestep)
 	
 	with open(classesFile, 'rt') as f:
 		classes = f.read().rstrip('\n').split('\n')
@@ -157,38 +163,40 @@ if __name__ == '__main__':
 	net = cv2.dnn.readNet(modelWeights)
 
 	# Load image.
-	#frame = cv2.imread(image)
+	frame = cv2.imread(image)
 	driver.setCruisingSpeed(50)
 	print(driver.step())
 	
 	while (driver.step() != -1):
-                cameraData = camera.getImage();
+                i += 1
+                if i % 10 == 0:
+                    cameraData = camera.getImage();
                 #imageRGB = [cameraData[i] for i in range(0, camera.getHeight()*camera.getWidth()*3)]
                 #imageRGB = bytes(imageRGB)
                 
                 #convertendo bytes para np array
-                image = np.frombuffer(cameraData, np.uint8).reshape((camera.getHeight(), camera.getWidth(), 4))
-                print(image.shape)
-                
-                #Elimina o quarto canal da imagem
-                image = image[:, :, :3]
-                
-                print(image.shape)
-            	
-                cv2.imwrite("frame.png", image)
-                
-                # Load video.
-                #frame = cv2.VideoCapture('video_teste.mp4')
-                
-                # Process image.
-                detections = pre_process(image, net)
-                img = post_process(image.copy(), detections)
-                
-                # Put efficiency information. The function getPerfProfile returns the overall time for inference(t) and the timings for each of the layers(in layersTimes)
-                t, _ = net.getPerfProfile()
-                label = 'Inference time: %.2f ms' % (t * 1000.0 / cv2.getTickFrequency())
-                print(label)
-                cv2.putText(img, label, (20, 40), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
-                
-                cv2.imshow('Output', img)
-                cv2.waitKey(1)
+                    image = np.frombuffer(cameraData, np.uint8).reshape((camera.getHeight(), camera.getWidth(), 4))
+                    print(image.shape)
+                    
+                    #Elimina o quarto canal da imagem
+                    image = image[:, :, :3]
+                    
+                    #print(image.shape)
+                	
+                    cv2.imwrite("frame.png", image)
+                    
+                    # Load video.
+                    #frame = cv2.VideoCapture('video_teste.mp4')
+                    
+                    # Process image.
+                    detections = pre_process(image, net)
+                    img = post_process(image.copy(), detections)
+                    
+                    # Put efficiency information. The function getPerfProfile returns the overall time for inference(t) and the timings for each of the layers(in layersTimes)
+                    t, _ = net.getPerfProfile()
+                    label = 'Inference time: %.2f ms' % (t * 1000.0 / cv2.getTickFrequency())
+                    print(label)
+                    #cv2.putText(img, label, (20, 40), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
+                    
+                    cv2.imshow('Output', img)
+                    cv2.waitKey(1)
