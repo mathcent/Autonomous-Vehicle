@@ -1,10 +1,12 @@
 
 from controller import Camera
 from vehicle import Driver
-from sklearn.linear_model import HuberRegressor, Ridge
 from matplotlib import pyplot as plt
 import cv2
 import numpy as np
+import time
+from detect_lines import criaImagem
+from fuzzy_logic import controleLinha,controlePlacaPare
 
 
 # Constants.
@@ -55,7 +57,7 @@ def pre_process(input_image, net):
 	return outputs
 
 
-def post_process(input_image, outputs):
+def post_process(input_image, outputs,driver,placaPare,velocidadeLimite):
 	# Lists to hold respective values while unwrapping.
 	class_ids = []
 	confidences = []
@@ -110,8 +112,7 @@ def post_process(input_image, outputs):
 		right = left + width
 		bottom = top + height
 		cropped_image = input_image[top:bottom, left:right] # Slicing to crop the image
-		cv2.imshow("cropped", cropped_image)
-		cv2.waitKey(1)
+
 		
 		cv2.rectangle(input_image, (left, top), (left + width, top + height), BLUE, 2*THICKNESS)
 				
@@ -124,14 +125,18 @@ def post_process(input_image, outputs):
 			color = ('b','g','r')
 			ax.clear()
 			for i,col in enumerate(color):
-            			histr = cv2.calcHist([cropped_image],[i],None,[256],[0,256])
-            			ax.plot(histr,color = col)
-            			plt.xlim([0,256])
-			plt.pause(0.1)
+				histr = cv2.calcHist([cropped_image],[i],None,[256],[0,256])
+				ax.plot(histr,color = col)
+
 
 		if (classes[class_ids[i]]) == "stop sign":
-			print(classes[class_ids[i]], confidences[i])
-			print((right-left)*(bottom-top))
+			#print(classes[class_ids[i]], confidences[i])
+			placaPare = True
+			velocidade = controlePlacaPare((right-left)*(bottom-top))
+			if velocidade <= velocidadeLimite:
+				driver.setCruisingSpeed(velocidade)
+			print("Placa de pare!")
+			print("Distancia: ", (right-left)*(bottom-top))
 
 		if (classes[class_ids[i]]) == "car":
 			print(classes[class_ids[i]], confidences[i])
@@ -139,7 +144,7 @@ def post_process(input_image, outputs):
 		if (classes[class_ids[i]]) == "person":
 			print(classes[class_ids[i]], confidences[i])
 			print((right-left)*(bottom-top))
-	return input_image
+	return input_image,placaPare
 
 
 if __name__ == '__main__':
@@ -164,39 +169,47 @@ if __name__ == '__main__':
 
 	# Load image.
 	frame = cv2.imread(image)
-	driver.setCruisingSpeed(50)
-	print(driver.step())
-	
+	driver.setCruisingSpeed(80)
+
+	#Para a logica do controle
+	placaPare = False
+	velocidadeLimite = 80
+
+	i=0	
 	while (driver.step() != -1):
-                i += 1
-                if i % 10 == 0:
-                    cameraData = camera.getImage();
-                #imageRGB = [cameraData[i] for i in range(0, camera.getHeight()*camera.getWidth()*3)]
-                #imageRGB = bytes(imageRGB)
-                
-                #convertendo bytes para np array
-                    image = np.frombuffer(cameraData, np.uint8).reshape((camera.getHeight(), camera.getWidth(), 4))
-                    print(image.shape)
-                    
-                    #Elimina o quarto canal da imagem
-                    image = image[:, :, :3]
-                    
-                    #print(image.shape)
-                	
-                    cv2.imwrite("frame.png", image)
-                    
-                    # Load video.
-                    #frame = cv2.VideoCapture('video_teste.mp4')
-                    
-                    # Process image.
-                    detections = pre_process(image, net)
-                    img = post_process(image.copy(), detections)
-                    
-                    # Put efficiency information. The function getPerfProfile returns the overall time for inference(t) and the timings for each of the layers(in layersTimes)
-                    t, _ = net.getPerfProfile()
-                    label = 'Inference time: %.2f ms' % (t * 1000.0 / cv2.getTickFrequency())
-                    print(label)
-                    cv2.putText(img, label, (20, 40), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
-                    
-                    cv2.imshow('Output', img)
-                    cv2.waitKey(1)
+		##driver.getCurrentSpeed()
+		if placaPare and driver.getCurrentSpeed()==0:
+			placaPare = False
+			time.sleep(2)
+			driver.setCruisingSpeed(velocidadeLimite)
+			
+
+
+		i+= 1
+		if False:
+			
+			#detecta as linhas e devolve o erro
+			erro = criaImagem(image)
+			#calcula o angulo que o volante deve virar
+			driver.setSteeringAngle(controleLinha(erro))
+		if i %10 ==  0:		
+			cameraData = camera.getImage()		
+			image = np.frombuffer(cameraData, np.uint8).reshape((camera.getHeight(), camera.getWidth(), 4))
+			image = image[:, :, :3]
+			cv2.imwrite("frame.png", image)
+
+			# Load video.
+			#frame = cv2.VideoCapture('video_teste.mp4')
+
+			# Process image.
+			detections = pre_process(image, net)
+			img,placaPare = post_process(image.copy(), detections,driver,placaPare,velocidadeLimite)
+
+			# Put efficiency information. The function getPerfProfile returns the overall time for inference(t) and the timings for each of the layers(in layersTimes)
+			t, _ = net.getPerfProfile()
+			label = 'Inference time: %.2f ms' % (t * 1000.0 / cv2.getTickFrequency())
+
+			cv2.putText(img, label, (20, 40), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
+
+
+			cv2.waitKey(1)
