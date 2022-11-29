@@ -42,23 +42,20 @@ def controleFreio():
 
 def controlePlacaPare(disctancia):
     disctControle = control.Antecedent(np.arange(0,2500,1), 'disctControle')
-    velControle = control.Consequent(np.arange(0,130,0.1), 'velControle')
+    velControle = control.Consequent(np.arange(-1,80,0.1), 'velControle')
 
-    disctControle['distante'] = skfuzzy.trapmf(disctControle.universe, [0,0,300,500])
-    disctControle['medio'] = skfuzzy.trapmf(disctControle.universe, [400 , 710 , 1500 , 1700])
-    disctControle['perto'] = skfuzzy.trapmf(disctControle.universe, [1600 , 1900 , 2500 , 2500])
+    disctControle['proximo'] = skfuzzy.trapmf(disctControle.universe, [900,1000,2500,2500])
+    disctControle['medio'] = skfuzzy.trimf(disctControle.universe, [400,700,1000])
+    disctControle['distante'] = skfuzzy.trimf(disctControle.universe, [0,0,500])
 
-
-    velControle['baixa'] = skfuzzy.trimf(velControle.universe, [0,0,50])
-    velControle['media'] = skfuzzy.trimf(velControle.universe, [40,65,90])
-    velControle['alta'] = skfuzzy.trimf(velControle.universe, [80,115,130])
+    velControle['baixa'] = skfuzzy.zmf(velControle.universe, -10,40)
+    velControle['media'] = skfuzzy.smf(velControle.universe, 30,80)
+    velControle['pare'] = skfuzzy.trimf(velControle.universe, [-0.1,0,0.1])
 
     regras = []
-    regras.append(control.Rule(disctControle['distante'] ,velControle['alta']))
-    regras.append(control.Rule(disctControle['medio'] ,velControle['media']))
-    regras.append(control.Rule(disctControle['perto'] ,velControle['baixa']))
-
-
+    regras.append(control.Rule(disctControle['distante'] ,velControle['media']))
+    regras.append(control.Rule(disctControle['medio'] ,velControle['baixa']))
+    regras.append(control.Rule(disctControle['proximo'] ,velControle['pare']))
 
     pareControl = control.ControlSystem(regras)
     pareSimulacao = control.ControlSystemSimulation(pareControl)  
@@ -68,39 +65,40 @@ def controlePlacaPare(disctancia):
     print("Velocidade: ",pareSimulacao.output['velControle'])
     return pareSimulacao.output['velControle']
 
-
     
+
+
+def controleLinha(erro,anguloAntigo):
+
+    erroLinha = control.Antecedent(np.arange(-1000,1000,0.1), 'erroLinha')
+    angulo = control.Consequent(np.arange(-0.15, 0.15, 0.001), 'angulo')
     
-    print("a")
+    erroLinha['direita']= skfuzzy.trapmf(erroLinha.universe, [-50,400,1000,1000])    
+    erroLinha['meio'] = skfuzzy.trimf(erroLinha.universe, [-200,0,200])
+    erroLinha['esquerda']= skfuzzy.trapmf(erroLinha.universe, [-1000,-1000,-400,50])
 
-def controleLinha(erro):
 
-    erroLinha = control.Antecedent(np.arange(-300,300,0.1), 'erroLinha')
-    angulo = control.Consequent(np.arange(-0.035, 0.035, 0.001), 'angulo')
-
-    erroLinha['direita']= skfuzzy.trapmf(erroLinha.universe, [-50,100,300,300])    
-    #erroLinha['meio'] = skfuzzy.trimf(erroLinha.universe, [-50,0,50])
-    erroLinha['esquerda']= skfuzzy.trapmf(erroLinha.universe, [-300,-300,-100,50])
-        
-
-    angulo['direita'] = skfuzzy.smf(angulo.universe, -0.015, 0.035)
-    #angulo['meio'] = skfuzzy.trimf(angulo.universe, [-0.005,0,0.005])
-    angulo['esquerda'] = skfuzzy.zmf(angulo.universe, -0.035, 0.015)
+    angulo['direita'] = skfuzzy.smf(angulo.universe, -0.01, 0.1)
+    angulo['meio'] = skfuzzy.trimf(angulo.universe, [-0.005,0,0.005])
+    angulo['esquerda'] = skfuzzy.zmf(angulo.universe, -0.1, 0.01)
     
     regras = []
     regras.append(control.Rule(erroLinha['direita'] , 
                             angulo['direita']))
+    regras.append(control.Rule(erroLinha['meio'] ,angulo['meio']))  
     regras.append(control.Rule(erroLinha['esquerda'] , 
                             angulo['esquerda']))   
-    #regras.append(control.Rule(erroLinha['meio'], angulo['meio']))        
-
-    angControl = control.ControlSystem(regras)
-    angSimulacao = control.ControlSystemSimulation(angControl)  
-    print(erro)
-    angSimulacao.input['erroLinha'] = erro
-    angSimulacao.compute()     
-    print(angSimulacao.output['angulo'])
-    return angSimulacao.output['angulo'][0]
+       
+    try:
+        angControl = control.ControlSystem(regras)
+        angSimulacao = control.ControlSystemSimulation(angControl)  
+        #print("Erro: ", erro[0])
+        angSimulacao.input['erroLinha'] = erro
+        angSimulacao.compute()     
+        #print(angSimulacao.output['angulo'][0])
+        return angSimulacao.output['angulo'][0]
+    except:
+        return anguloAntigo
 
 
 

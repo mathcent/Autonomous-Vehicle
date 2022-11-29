@@ -3,6 +3,19 @@ import cv2
 import numpy as np
 from sklearn.linear_model import HuberRegressor, Ridge
 
+def get_lower_x(p1,p2):
+    m = (p1[1]-p2[1])/(p1[0]-p2[0])
+    b = (p1[0]*p2[1]-p2[0]*p1[1])/(p1[0]-p2[0])
+    return -b/m #esse é o x para y = 0
+
+
+def get_center(p1,p2,p3):
+    x = (p1[0]+p2[0]+p3[0])/3
+    y = (p1[1]+p2[1]+p3[1])/3
+    p = [x,y]
+    return p
+
+
 def calculate_intersection(p1,p2,p3,p4):
     c2x = p3[0] - p4[0] 
     c3x = p1[0] - p2[0]
@@ -11,20 +24,21 @@ def calculate_intersection(p1,p2,p3,p4):
 
     d  = c3x * c2y - c3y * c2x
 
-    if (d == 0):
-        print("Tem nada aki fi")   	
-
-
-
     u1 = p1[0] * p2[1] - p1[1] * p2[0] 
     u4 = p3[0] * p4[1] - p3[1] * p4[0]
 
-
-
     px = (u1 * c2x - c3x * u4) / d
-    ##p = { 'x': px, 'y': py }
+    py = (u1 * c2y - c3y * u4) / d
 
-    return px
+    p = [px, py ]
+
+    return p
+
+def calcula_erro(p1,p2,p3,p4):
+    p_intersection = calculate_intersection(p1,p2,p3,p4)
+    p_center = get_center(p_intersection,p2,p4)
+
+    return get_lower_x(p_intersection,p_center)
 
 
 def draw_lines(img, lines):
@@ -45,12 +59,8 @@ def draw_lines(img, lines):
         
         for position, lines_dir in line_dict.items():
             data = np.array(lines_dir)
-            try:
-                data = data[data[:, 1] >= np.array(15)-1]
-                x, y = data[:, 0].reshape((-1, 1)), data[:, 1]
-            except:
-                print("saiu da rua!") 
-                return 0
+            data = data[data[:, 1] >= np.array(15)-1]
+            x, y = data[:, 0].reshape((-1, 1)), data[:, 1]
 
             try:
                 model = HuberRegressor(fit_intercept=True, alpha=0.0, max_iter=100,
@@ -76,8 +86,8 @@ def draw_lines(img, lines):
             else:
                 p3 = [x[-1],y_pred.reshape((-1, 1))[-1]]
                 p4 = [x[-2],y_pred.reshape((-1, 1))[-2]]
-
-        return calculate_intersection(p1,p2,p3,p4)-(img.shape[1])/2
+        erro  = calcula_erro(p1,p2,p3,p4)-(img.shape[1])/2
+        return erro
         
 
 

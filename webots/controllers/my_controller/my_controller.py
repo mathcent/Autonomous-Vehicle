@@ -2,12 +2,13 @@
 from controller import Camera
 from vehicle import Driver
 from matplotlib import pyplot as plt
+from controller import Keyboard
+from controller import GPS
 import cv2
 import numpy as np
 import time
 from detect_lines import criaImagem
 from fuzzy_logic import controleLinha,controlePlacaPare
-
 
 # Constants.
 INPUT_WIDTH = 640
@@ -119,7 +120,7 @@ def post_process(input_image, outputs,driver,placaPare,velocidadeLimite):
 		label = "{}:{:.2f}".format(classes[class_ids[i]], confidences[i])
 		draw_label(input_image, label, left, top)
 		
-		if (classes[class_ids[i]]) == "traffic light":
+		if (classes[class_ids[i]]) == "traffic lightt":
 			print(classes[class_ids[i]], confidences[i])
 			print((right-left)*(bottom-top))
 			color = ('b','g','r')
@@ -131,17 +132,21 @@ def post_process(input_image, outputs,driver,placaPare,velocidadeLimite):
 
 		if (classes[class_ids[i]]) == "stop sign":
 			#print(classes[class_ids[i]], confidences[i])
-			placaPare = True
-			velocidade = controlePlacaPare((right-left)*(bottom-top))
-			if velocidade <= velocidadeLimite:
-				driver.setCruisingSpeed(velocidade)
+			placaPare = True			
+			#velocidade = controlePlacaPare((right-left)*(bottom-top))
+			#if velocidade <= velocidadeLimite:
+			#	driver.setCruisingSpeed(velocidade)
+			if((right-left)*(bottom-top) >1500):
+				driver.setCruisingSpeed(0)
 			print("Placa de pare!")
 			print("Distancia: ", (right-left)*(bottom-top))
 
-		if (classes[class_ids[i]]) == "car":
+
+
+		if (classes[class_ids[i]]) == "carr":
 			print(classes[class_ids[i]], confidences[i])
 			print((right-left)*(bottom-top))
-		if (classes[class_ids[i]]) == "person":
+		if (classes[class_ids[i]]) == "personn":
 			print(classes[class_ids[i]], confidences[i])
 			print((right-left)*(bottom-top))
 	return input_image,placaPare
@@ -153,49 +158,55 @@ if __name__ == '__main__':
 	fig, ax = plt.subplots()
 	driver = Driver()
 	camera = Camera("camera")
-	timestep = int(driver.getBasicTimeStep())
+	gps = GPS("gps")
+	timestep = int(driver.getBasicTimeStep())	
 	camera.enable(timestep)
+	gps.enable(timestep)
 	image = camera.getImage()
 	classesFile = "coco.names"
 	classes = None
 	#print(timestep)
-	
+
 	with open(classesFile, 'rt') as f:
 		classes = f.read().rstrip('\n').split('\n')
 		
 	# Give the weight files to the model and load the network using them.
 	modelWeights = "models/yolov5m.onnx"
 	net = cv2.dnn.readNet(modelWeights)
-
 	# Load image.
 	frame = cv2.imread(image)
-	driver.setCruisingSpeed(80)
+	driver.setCruisingSpeed(50)
 
 	#Para a logica do controle
 	placaPare = False
-	velocidadeLimite = 80
-
+	velocidadeLimite = 50
+	angulo = 0 
+	anguloAntigo = 0
 	i=0	
+
 	while (driver.step() != -1):
-		##driver.getCurrentSpeed()
-		if placaPare and driver.getCurrentSpeed()==0:
+		if placaPare and driver.getCurrentSpeed()<1:
 			placaPare = False
-			time.sleep(2)
+			time.sleep(3)
 			driver.setCruisingSpeed(velocidadeLimite)
 			
-
-
-		i+= 1
-		if False:
-			
+		cameraData = camera.getImage()		
+		image = np.frombuffer(cameraData, np.uint8).reshape((camera.getHeight(), camera.getWidth(), 4))
+		image = image[:, :, :3]
+		if True:
+			try:
 			#detecta as linhas e devolve o erro
-			erro = criaImagem(image)
-			#calcula o angulo que o volante deve virar
-			driver.setSteeringAngle(controleLinha(erro))
-		if i %10 ==  0:		
-			cameraData = camera.getImage()		
-			image = np.frombuffer(cameraData, np.uint8).reshape((camera.getHeight(), camera.getWidth(), 4))
-			image = image[:, :, :3]
+				erro = criaImagem(image)
+				#calcula o angulo que o volante deve virar
+				angulo = controleLinha(erro,anguloAntigo)
+				driver.setSteeringAngle(angulo)
+				anguloAntigo = angulo
+			except:
+				#print("saiu da rua!") 
+				continue
+				#driver.setSteeringAngle(controleLinha(-anguloAntigo))				
+		if False:		
+			print(driver.getCurrentSpeed())
 			cv2.imwrite("frame.png", image)
 
 			# Load video.
