@@ -8,7 +8,7 @@ import cv2
 import numpy as np
 import time
 from detect_lines import criaImagem
-from fuzzy_logic import controleLinha,controlePlacaPare
+from fuzzy_logic import controleLinha,controlePlacaPare,controleSemaforo
 
 # Constants.
 INPUT_WIDTH = 640
@@ -27,7 +27,6 @@ BLACK  = (0,0,0)
 BLUE   = (255,178,50)
 YELLOW = (0,255,255)
 RED = (0,0,255)
-
 
 
 
@@ -58,7 +57,7 @@ def pre_process(input_image, net):
 	return outputs
 
 
-def post_process(input_image, outputs,driver,placaPare,velocidadeLimite):
+def post_process(input_image, outputs,velocidadeLimite,driver,placaPare):
 	# Lists to hold respective values while unwrapping.
 	class_ids = []
 	confidences = []
@@ -113,42 +112,49 @@ def post_process(input_image, outputs,driver,placaPare,velocidadeLimite):
 		right = left + width
 		bottom = top + height
 		cropped_image = input_image[top:bottom, left:right] # Slicing to crop the image
-
+		#cv2.imshow("cropped", cropped_image)
+		#cv2.waitKey(1)
 		
 		cv2.rectangle(input_image, (left, top), (left + width, top + height), BLUE, 2*THICKNESS)
 				
 		label = "{}:{:.2f}".format(classes[class_ids[i]], confidences[i])
 		draw_label(input_image, label, left, top)
 		
-		if (classes[class_ids[i]]) == "traffic lightt":
-			print(classes[class_ids[i]], confidences[i])
-			print((right-left)*(bottom-top))
+		if (classes[class_ids[i]]) == "traffic light":
+			#print(classes[class_ids[i]], confidences[i])
+			#metric_traffic_light.append(confidences[i])
+			#print((right-left)*(bottom-top))
 			color = ('b','g','r')
-			ax.clear()
+			#ax.clear()
 			for i,col in enumerate(color):
 				histr = cv2.calcHist([cropped_image],[i],None,[256],[0,256])
-				ax.plot(histr,color = col)
+				#ax.plot(histr,color = col)
+				#plt.xlim([0,256])
+				if (col == 'g'):
+					hist_verde = np.sum(histr[150:200])
+					print((right-left)*(bottom-top))
+					if hist_verde > 130:
+						driver.setCruisingSpeed(velocidadeLimite)
+					else:
+						velocidade = controleSemaforo((right-left)*(bottom-top))
+						driver.setCruisingSpeed(velocidade)
+           			
+			#plt.pause(0.1)
 
-
-		if (classes[class_ids[i]]) == "stop sign":
+		elif (classes[class_ids[i]]) == "stop sign":
+			placaPare = True
+			velocidade = controleSemaforo((right-left)*(bottom-top))
+			driver.setCruisingSpeed(velocidade)
 			#print(classes[class_ids[i]], confidences[i])
-			placaPare = True			
-			#velocidade = controlePlacaPare((right-left)*(bottom-top))
-			#if velocidade <= velocidadeLimite:
-			#	driver.setCruisingSpeed(velocidade)
-			if((right-left)*(bottom-top) >1500):
-				driver.setCruisingSpeed(0)
-			print("Placa de pare!")
-			print("Distancia: ", (right-left)*(bottom-top))
-
-
-
-		if (classes[class_ids[i]]) == "carr":
-			print(classes[class_ids[i]], confidences[i])
-			print((right-left)*(bottom-top))
-		if (classes[class_ids[i]]) == "personn":
-			print(classes[class_ids[i]], confidences[i])
-			print((right-left)*(bottom-top))
+			#metric_stop_sign.append(confidences[i])
+			#print((right-left)*(bottom-top))
+			continue
+			
+		elif (classes[class_ids[i]]) == "person":
+			#print(classes[class_ids[i]], confidences[i])
+			#metric_person.append(confidences[i])
+			#print((right-left)*(bottom-top))
+			continue
 	return input_image,placaPare
 
 
@@ -175,11 +181,11 @@ if __name__ == '__main__':
 	net = cv2.dnn.readNet(modelWeights)
 	# Load image.
 	frame = cv2.imread(image)
-	driver.setCruisingSpeed(50)
+	driver.setCruisingSpeed(70)
 
 	#Para a logica do controle
 	placaPare = False
-	velocidadeLimite = 50
+	velocidadeLimite = 70
 	angulo = 0 
 	anguloAntigo = 0
 	i=0	
@@ -193,7 +199,7 @@ if __name__ == '__main__':
 		cameraData = camera.getImage()		
 		image = np.frombuffer(cameraData, np.uint8).reshape((camera.getHeight(), camera.getWidth(), 4))
 		image = image[:, :, :3]
-		if True:
+		if False:
 			try:
 			#detecta as linhas e devolve o erro
 				erro = criaImagem(image)
@@ -205,22 +211,46 @@ if __name__ == '__main__':
 				#print("saiu da rua!") 
 				continue
 				#driver.setSteeringAngle(controleLinha(-anguloAntigo))				
-		if False:		
-			print(driver.getCurrentSpeed())
+		i += 1
+		print("Velocidade real: ",driver.getCurrentSpeed())
+		if i % 10 == 0:
+			cameraData = camera.getImage()
+			#imageRGB = [cameraData[i] for i in range(0, camera.getHeight()*camera.getWidth()*3)]
+			#imageRGB = bytes(imageRGB)
+		
+			#convertendo bytes para np array
+			image = np.frombuffer(cameraData, np.uint8).reshape((camera.getHeight(), camera.getWidth(), 4))
+			#print(image.shape)
+			
+			#Elimina o quarto canal da imagem
+			image = image[:, :, :3]
+			
+			#print(image.shape)
+			
 			cv2.imwrite("frame.png", image)
-
+			
 			# Load video.
 			#frame = cv2.VideoCapture('video_teste.mp4')
-
+			
 			# Process image.
 			detections = pre_process(image, net)
-			img,placaPare = post_process(image.copy(), detections,driver,placaPare,velocidadeLimite)
-
+			img,placaPare = post_process(image.copy(), detections,velocidadeLimite,driver,placaPare)
+			
 			# Put efficiency information. The function getPerfProfile returns the overall time for inference(t) and the timings for each of the layers(in layersTimes)
 			t, _ = net.getPerfProfile()
 			label = 'Inference time: %.2f ms' % (t * 1000.0 / cv2.getTickFrequency())
+			#print(label)
+			#cv2.putText(img, label, (20, 40), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
+			
+			#cv2.imshow('Output', img)
+			#cv2.waitKey(1)
 
-			cv2.putText(img, label, (20, 40), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
-
-
-			cv2.waitKey(1)
+			#media_farol = np.mean(metric_traffic_light)
+			#media_placa_pare = np.mean(metric_stop_sign)
+			#media_person = np.mean(metric_person)
+			#print('media_farol')
+			#print(media_farol)
+			#print('media_placa_pare')
+			#print(media_placa_pare)
+			#print('media_person')
+			#print(media_person)

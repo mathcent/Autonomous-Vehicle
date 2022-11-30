@@ -1,0 +1,43 @@
+import matplotlib.pyplot as plt
+from shapely.geometry import Point
+from shapely.geometry.polygon import Polygon
+
+x_fora = [4, 1, 0, 2]
+y_fora = [1, 2, 0, 1]
+
+
+x_dentro = [-51,-48.3,-26.4,-14.5,-4.5,
+            64.5,77.56,88.79,97.53,99,
+            99,74.6,86.4,96.3,64.5,
+            -4.5,-28.9,-39]
+y_dentro = [-4.5,-17.9,-31.1,-37.5,-51,
+            -39,36.95,-29.12,-14.6,-4.5,
+            133.5,167,160,147,168,
+            168,158,133.5]
+
+plt.fill(x_fora, y_fora, facecolor='none', edgecolor='purple', linewidth=3)
+plt.fill(x_dentro, y_dentro, facecolor='none', edgecolor='purple', linewidth=3)
+
+# aqui você pode colocar uma condição tipo, "se dentro do plot vermelho, se não preto", mudando o parâmetro "c"
+plt.plot(1.5, 1.75, c="red", markersize=20, marker=".")
+plt.show()
+
+
+
+
+# aqui você vai criar vários pontos, cada um a localização do carro
+point = Point(1.5, 1.75)
+
+# aqui você vai ter que definir os pontos (x,y) de cada vértice do polígno.
+# quando tiver todos os pontos, é só colocar mais dentro da lista
+# "holes" é uma lista com os pontos de dentro.
+polygon = Polygon(
+    [(x_fora[0], y_fora[0]) , (x_fora[1], y_fora[1]), (x_fora[2], y_fora[2]), (x_fora[3], y_fora[3]),(x_fora[4], y_fora[4]), 
+    (x_fora[5], y_fora[5]) , (x_fora[6], y_fora[6]), (x_fora[7], y_fora[7]), (x_fora[8], y_fora[8]),(x_fora[9], y_fora[9]), 
+    (x_fora[10], y_fora[10]) , (x_fora[11], y_fora[11]), (x_fora[12], y_fora[12]), (x_fora[13], y_fora[13]),(x_fora[14], y_fora[14]), 
+    (x_fora[15], y_fora[15]) , (x_fora[16], y_fora[16]), (x_fora[17], y_fora[17])], 
+    holes=[[(x_dentro[0], y_dentro[0]) , (x_dentro[1], y_dentro[1]), (x_dentro[2], y_dentro[2]), (x_dentro[3], y_dentro[3])]]
+)
+
+print(polygon.contains(point)) # condição que checa se o ponto tá dentro do polígno
+#>>> True

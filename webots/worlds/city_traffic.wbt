@@ -66,8 +66,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.1252804328599014 0.04183326904365574 -0.9912390179687021 2.4724200093982063
-  position -24.620454366272284 37.95831421665896 10.230874146732702
+  orientation 0.2549411057027693 0.27372687130316764 -0.9274042444099706 1.6260511665225295
+  position -42.2249418784771 55.78873750480775 17.981374986105298
   near 1
   lensFlare LensFlare {
   }
@@ -148,15 +148,9 @@ SpeedLimitSign {
     }
   ]
 }
-GenericTrafficLight {
-  translation -51 29.92 0.0700011
-  rotation -0.0026073289594429508 3.4468886243836845e-09 0.9999966009120719 -5.307179586466759e-06
-  name "generic traffic light(1)"
-  state "green"
-}
 TeslaModel3 {
-  translation -45.3845 24.7461 0.370079
-  rotation -0.004518062060726194 0.003267211490202704 0.9999844561013405 -1.6913953071795866
+  translation -45.2621 126.495 0.370079
+  rotation 0 0 -1 1.5604996938995748
   controller "my_controller"
   sensorsSlotFront [
     Camera {
@@ -684,14 +678,11 @@ Crossroad {
   ]
 }
 GenericTrafficLight {
-  translation 14.33 -51.02 0.11
-  rotation 1.27237e-14 9.58979e-09 -1 -3.1415853071795863
+  translation -39.04 26.37 0.11
+  rotation -9.58981e-09 9.58984e-09 -1 -1.5707853071795865
+  startGreen FALSE
+  greenTime 1
   state "green"
-}
-StopSign {
-  translation -39.8661 13.9321 0.6
-  rotation 0 0 -1 -1.5707953071795862
-  name "stop sign(3)"
 }
 Crossroad {
   translation -105 4.4999794 0
