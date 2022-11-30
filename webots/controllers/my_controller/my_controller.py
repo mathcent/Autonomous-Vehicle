@@ -7,8 +7,10 @@ from controller import GPS
 import cv2
 import numpy as np
 import time
+#from verifica_posi import calcula_posicao
 from detect_lines import criaImagem
 from fuzzy_logic import controleLinha,controlePlacaPare,controleSemaforo
+
 
 # Constants.
 INPUT_WIDTH = 640
@@ -142,13 +144,18 @@ def post_process(input_image, outputs,velocidadeLimite,driver,placaPare):
 			#plt.pause(0.1)
 
 		elif (classes[class_ids[i]]) == "stop sign":
-			placaPare = True
-			velocidade = controleSemaforo((right-left)*(bottom-top))
-			driver.setCruisingSpeed(velocidade)
-			#print(classes[class_ids[i]], confidences[i])
-			#metric_stop_sign.append(confidences[i])
-			#print((right-left)*(bottom-top))
-			continue
+			print((right-left)*(bottom-top))
+			if (right-left)*(bottom-top) < 1400:
+				placaPare = True				
+				velocidade = controlePlacaPare((right-left)*(bottom-top))
+				driver.setCruisingSpeed(velocidade)
+				#print(classes[class_ids[i]], confidences[i])
+				#metric_stop_sign.append(confidences[i])
+				#print((right-left)*(bottom-top))
+			elif not placaPare:
+				print("segue")
+				driver.setCruisingSpeed(velocidadeLimite)
+
 			
 		elif (classes[class_ids[i]]) == "person":
 			#print(classes[class_ids[i]], confidences[i])
@@ -172,6 +179,8 @@ if __name__ == '__main__':
 	classesFile = "coco.names"
 	classes = None
 	#print(timestep)
+	x = []
+	y = []
 
 	with open(classesFile, 'rt') as f:
 		classes = f.read().rstrip('\n').split('\n')
@@ -212,8 +221,8 @@ if __name__ == '__main__':
 				continue
 				#driver.setSteeringAngle(controleLinha(-anguloAntigo))				
 		i += 1
-		print("Velocidade real: ",driver.getCurrentSpeed())
-		if i % 10 == 0:
+
+		if i%10 ==0:
 			cameraData = camera.getImage()
 			#imageRGB = [cameraData[i] for i in range(0, camera.getHeight()*camera.getWidth()*3)]
 			#imageRGB = bytes(imageRGB)

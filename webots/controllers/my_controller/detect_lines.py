@@ -9,9 +9,9 @@ def get_lower_x(p1,p2):
     return -b/m #esse é o x para y = 0
 
 
-def get_center(p1,p2,p3):
-    x = (p1[0]+p2[0]+p3[0])/3
-    y = (p1[1]+p2[1]+p3[1])/3
+def get_center(p1,p2):
+    x = (p1[0]+p2[0])/2
+    y = (p1[1]+p2[1])/2
     p = [x,y]
     return p
 
@@ -36,7 +36,7 @@ def calculate_intersection(p1,p2,p3,p4):
 
 def calcula_erro(p1,p2,p3,p4):
     p_intersection = calculate_intersection(p1,p2,p3,p4)
-    p_center = get_center(p_intersection,p2,p4)
+    p_center = get_center(p2,p4)
 
     return get_lower_x(p_intersection,p_center)
 
