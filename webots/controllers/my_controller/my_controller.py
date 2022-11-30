@@ -9,15 +9,15 @@ import numpy as np
 import time
 #from verifica_posi import calcula_posicao
 from detect_lines import criaImagem
-from fuzzy_logic import controleLinha,controlePlacaPare,controleSemaforo
+from fuzzy_logic import controleLinha,controlePlacaPare,controleSemaforo,controlePedestre
 
 
 # Constants.
 INPUT_WIDTH = 640
 INPUT_HEIGHT = 640
-SCORE_THRESHOLD = 0.5
-NMS_THRESHOLD = 0.45
-CONFIDENCE_THRESHOLD = 0.45
+SCORE_THRESHOLD = 0.6
+NMS_THRESHOLD = 0.6
+CONFIDENCE_THRESHOLD = 0.6
 
 # Text parameters.
 FONT_FACE = cv2.FONT_HERSHEY_SIMPLEX
@@ -160,7 +160,9 @@ def post_process(input_image, outputs,velocidadeLimite,driver,placaPare):
 		elif (classes[class_ids[i]]) == "person":
 			#print(classes[class_ids[i]], confidences[i])
 			#metric_person.append(confidences[i])
-			#print((right-left)*(bottom-top))
+			velocidade = controlePedestre((right-left)*(bottom-top))
+			driver.setCruisingSpeed(velocidade)
+			print((right-left)*(bottom-top))
 			continue
 	return input_image,placaPare
 

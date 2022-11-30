@@ -4,12 +4,14 @@ from shapely.geometry.polygon import Polygon
 
 
 def calcula_posicao(x,y):
-        x_fora = [-51,-4.5,
+        x_fora = [-51,                
+                -4.5,
                 64.5,111,
                 111,64.5,
                 -4.5,-51]
 
-        y_fora = [-4.5,-51,
+        y_fora = [-4.5,
+                -49,
                 -51,-4.5,
                 133.5,180,
                 180,133]

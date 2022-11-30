@@ -7,6 +7,31 @@ import skfuzzy
 
 #Ficar no meio da pista
 
+def controlePedestre(disctancia):
+    disctControle = control.Antecedent(np.arange(0,3000,1), 'disctControle')
+    velControle = control.Consequent(np.arange(-1,60,0.1), 'velControle')
+
+    disctControle['proximo'] = skfuzzy.trapmf(disctControle.universe, [2500,2600,3000,3000])
+    disctControle['medio'] = skfuzzy.trimf(disctControle.universe, [900,2200,2500])
+    disctControle['distante'] = skfuzzy.trimf(disctControle.universe, [0,0,1000])
+
+    velControle['baixa'] = skfuzzy.zmf(velControle.universe, 0,40)
+    velControle['media'] = skfuzzy.smf(velControle.universe, 30,60)
+    velControle['pare'] = skfuzzy.trimf(velControle.universe, [-0.1,0,0.1])
+
+    regras = []
+    regras.append(control.Rule(disctControle['distante'] ,velControle['media']))
+    regras.append(control.Rule(disctControle['medio'] ,velControle['baixa']))
+    regras.append(control.Rule(disctControle['proximo'] ,velControle['pare']))
+
+
+    pareControl = control.ControlSystem(regras)
+    pareSimulacao = control.ControlSystemSimulation(pareControl)  
+    #pareSimulacao.input['disctControle'] = 1200
+    pareSimulacao.input['disctControle'] = disctancia
+    pareSimulacao.compute()     
+    print("Velocidade: ",pareSimulacao.output['velControle'])
+    return pareSimulacao.output['velControle']
 
 
 
