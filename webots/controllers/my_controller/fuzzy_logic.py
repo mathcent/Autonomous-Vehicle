@@ -39,11 +39,11 @@ def controleSemaforo(disctancia):
     disctControle = control.Antecedent(np.arange(0,2500,1), 'disctControle')
     velControle = control.Consequent(np.arange(-1,50,0.1), 'velControle')
 
-    disctControle['proximo'] = skfuzzy.trapmf(disctControle.universe, [899,1000,2500,2500])
-    disctControle['medio'] = skfuzzy.trimf(disctControle.universe, [400,600,901])
-    disctControle['distante'] = skfuzzy.trimf(disctControle.universe, [0,0,500])
+    disctControle['proximo'] = skfuzzy.trapmf(disctControle.universe, [500,600,2500,2500])
+    disctControle['medio'] = skfuzzy.trimf(disctControle.universe, [300,400,500])
+    disctControle['distante'] = skfuzzy.trimf(disctControle.universe, [0,0,400])
 
-    velControle['baixa'] = skfuzzy.zmf(velControle.universe, -10,30)
+    velControle['baixa'] = skfuzzy.zmf(velControle.universe, 0,30)
     velControle['media'] = skfuzzy.smf(velControle.universe, 20,50)
     velControle['pare'] = skfuzzy.trimf(velControle.universe, [-0.1,0,0.1])
 

@@ -66,8 +66,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.16354565311907332 0.19781878768670086 -0.9664991187704312 1.4932324778170232
-  position -43.35115532618787 95.66411935694528 12.103415581905683
+  orientation 0.20954938527565878 0.22152459185776807 -0.9523738290885796 1.6257225486044231
+  position -46.9585993800092 85.75117527556401 12.877819004434011
   near 1
   lensFlare LensFlare {
   }
@@ -113,26 +113,55 @@ DEF GROUND_SHAPE Solid {
   locked TRUE
 }
 Pedestrian {
-  translation -40.99 25.88 1.27
-  rotation 0 0 1 1.5708
+  translation 79.37 164.26 1.27
+  name "pedestrian(2)"
 }
 StopSign {
-  translation 38.97 31.82 0
+  translation 98.98 87.82 0
+  rotation 0 0 1 -1.5707953071795862
+  name "stop sign(2)"
+}
+Pedestrian {
+  translation -51.41 126.58 1.27
   rotation 0 0 1 1.5708
 }
+Pedestrian {
+  translation -38.55 46.57 1.26
+  rotation 0 0 1 1.5708
+  name "pedestrian(3)"
+}
+Pedestrian {
+  translation 111.24 -0.145 1.28
+  rotation 0 0 1 -2.094395307179586
+  name "pedestrian(1)"
+}
+StopSign {
+  translation 65 -39 0
+  rotation 0 0 1 -3.1415853071795863
+}
 TeslaModel3 {
-  hidden position_0_0 -5.784474331417098e-05
-  hidden position2_0_0 367.94654221806564
-  hidden position_0_1 5.7844409342135e-05
-  hidden position2_0_1 367.95499868266836
-  hidden position_0_2 366.942910571808
-  hidden position_0_3 366.9430973252846
-  hidden rotation_1 -0.7006566772560883 0.134802413062956 0.7006486495019182 3.409661696183923
-  hidden rotation_2 0.700363229259756 0.13781938568927873 -0.7003550271320081 3.4155854716311667
-  hidden rotation_3 -0.6894380192583724 -0.22215027767146528 0.689437793953583 2.7043917434137614
-  hidden rotation_4 0.6894489011402012 -0.22208272357450606 -0.6894486758318551 2.704520499376937
-  translation -44.9205 98.8575 0.861702
-  rotation -0.008085344433083378 -0.008184228375341529 -0.9999338206157938 1.5587069747729523
+  hidden position_0_0 0.03396350402906971
+  hidden position2_0_0 2207.566883328674
+  hidden position_0_1 0.03756149349293391
+  hidden position2_0_1 2236.8644373495727
+  hidden position_0_2 2207.3429920751737
+  hidden position_0_3 2243.7270239029203
+  hidden linearVelocity_0 0.08579580444142904 -18.695945548039717 -0.003915473876798778
+  hidden angularVelocity_0 -0.0003230418961921818 0.17778617815963688 -0.12836772384586853
+  hidden rotation_1 0.6708580953048859 0.34026190869523576 -0.6589167242186039 3.8377383678763852
+  hidden linearVelocity_1 -0.12535858395948107 -18.78651825266659 -0.031092724708330195
+  hidden angularVelocity_1 51.99877229991681 -0.815971281572817 -0.22045385458632563
+  hidden rotation_2 0.006446975718093979 -0.9990125775326331 -0.043958007640193135 1.572732048465752
+  hidden linearVelocity_2 -0.09141559038602655 -18.60873457466005 -0.005744556683871952
+  hidden angularVelocity_2 51.50322109332992 -1.0034560304877689 -0.2322543288918539
+  hidden rotation_3 0.6369709778654526 0.4342075677558916 -0.6369707697066187 3.960880131127145
+  hidden linearVelocity_3 0.2536173360188691 -18.7292705707185 -0.003557435755962679
+  hidden angularVelocity_3 51.891644422332945 0.8849860373853516 0.3037042361870432
+  hidden rotation_4 -0.2958847369658434 0.9082425348339631 0.2958846402722363 4.616293717731675
+  hidden linearVelocity_4 0.232758181890457 -18.649987716936767 0.005841496984918019
+  hidden angularVelocity_4 52.14605192115646 0.8814918601642513 0.31765080187033257
+  translation -47.07203005910547 40.75262073862496 0.2619579101349352
+  rotation 0.004229840597159164 0.011172319832007485 0.9999286413130158 -1.5582496766640102
   controller "my_controller"
   sensorsSlotFront [
     Camera {
@@ -217,12 +246,7 @@ StraightRoadSegment {
   width 12
   numberOfLanes 3
   numberOfForwardLanes 2
-  lines [
-    RoadLine {
-    }
-    RoadLine {
-    }
-  ]
+  lines []
   rightBorder FALSE
   leftBorder FALSE
   length 69
@@ -306,239 +330,21 @@ StraightRoadSegment {
   leftBorder FALSE
   length 138.1
 }
-SimpleBuilding {
-  translation 75.5747 -1.091 0
-  name "building(2)"
-  floorHeight 5
-  wallType "brick building"
-  roofType "gravel"
-  roofShape "flat roof"
+GenericTrafficLight {
+  translation -3.19 180.09 -0.17
+  rotation 0 0 -1 -5.307179586466759e-06
+  name "generic traffic light(2)"
+  greenTime 30
+  redTime 10
+  state "green"
 }
-SimpleBuilding {
-  translation 75.5247 -1.081 15.13
-  name "building(1)"
-  floorHeight 5
-  wallType "brick building"
-  roofType "gravel"
-  roofShape "flat roof"
-}
-SimpleBuilding {
-  translation 77.745 66.232 0
-  name "building(3)"
-  floorHeight 5
-  wallType "brick building"
-  roofType "gravel"
-  roofShape "flat roof"
-}
-SimpleBuilding {
-  translation 78.956 20.167 0
-  name "building(4)"
-  floorHeight 5
-  wallType "brick building"
-  roofType "gravel"
-  roofShape "flat roof"
-}
-SimpleBuilding {
-  translation 74.956 44.6541 0
-  name "building(5)"
-  floorHeight 5
-  wallType "brick building"
-  roofType "gravel"
-  roofShape "flat roof"
-}
-Forest {
-  rotation 0 0 1 -1.5608
-  shape [
-    -105.8 -117
-    -99 -150.8
-    -69.7 -174
-    -186 -176.3
-    -205.3 -140.5
-    -195 -117
-  ]
-  density 0.3
-}
-Forest {
-  rotation 0 0 1 -1.5608
-  shape [
-    -80 -118
-    -73.7 -141
-    -49 -153
-    64.3 -153
-    12 -117
-  ]
-}
-Forest {
-  rotation 0 0 1 -1.5608
-  shape [
-    -7.6 116.2
-    72.4 116.5
-    174.5 99.2
-    175.8 191.2
-    -56.5 122.9
-  ]
-}
-SimpleTree {
-  translation -86.3803 -3.69635 0
-}
-SimpleTree {
-  translation -86.3803 -18.9264 0
-  name "tree(1)"
-}
-SimpleTree {
-  translation -43.078 -123.055 0
-  name "tree(2)"
-}
-SimpleTree {
-  translation -22.318 -123.055 0
-  name "tree(3)"
-}
-SimpleTree {
-  translation 1.70201 -123.055 0
-  name "tree(4)"
-}
-SimpleTree {
-  translation 20.4431 130.5 0
-  name "tree(5)"
-}
-SimpleTree {
-  translation 53.4842 123.995 0
-  rotation 0 0 1 5.49779
-  name "tree(6)"
-}
-SimpleTree {
-  translation 83.0494 196.584 0
-  name "tree(7)"
-}
-SimpleTree {
-  translation -33.9112 179.976 0
-  rotation 0 -1 0 6.28319
-  name "tree(8)"
-}
-SimpleTree {
-  translation -59.8734 114.947 0
-  name "tree(9)"
-}
-SimpleTree {
-  translation -22.2335 150.308 0
-  rotation 0 -1 0 6.28319
-  name "tree(10)"
-}
-SimpleTree {
-  translation 16.4343 145.045 0
-  name "tree(11)"
-}
-SimpleTree {
-  translation 89.3742 77.3517 0
-  name "tree(12)"
-}
-SimpleTree {
-  translation 89.3742 59.8317 0
-  name "tree(13)"
-}
-SimpleTree {
-  translation 89.3742 42.5017 0
-  name "tree(14)"
-}
-SimpleTree {
-  translation 89.3742 24.6817 0
-  name "tree(15)"
-}
-SimpleTree {
-  translation 89.3742 6.71175 0
-  name "tree(16)"
-}
-SimpleTree {
-  translation 89.3742 -10.6583 0
-  name "tree(17)"
-}
-SimpleTree {
-  translation 137.36 -53.2389 0
-  name "tree(18)"
-}
-SimpleTree {
-  translation 122.111 -32.1201 0
-  name "tree(19)"
-}
-SimpleTree {
-  translation 110.762 -29.023 0
-  name "tree(20)"
-}
-SimpleTree {
-  translation 90.773 -54.456 0
-  name "tree(21)"
-}
-SimpleTree {
-  translation 40.292 -105.225 0
-  name "tree(22)"
-}
-SimpleTree {
-  translation -29.8047 -59.5626 0
-  name "tree(23)"
-}
-SimpleTree {
-  translation -56.111 -34.7085 0
-  name "tree(24)"
-}
-SimpleTree {
-  translation -86.3803 -38.0164 0
-  name "tree(25)"
-}
-SimpleTree {
-  translation -86.3803 9.02365 0
-  name "tree(26)"
-}
-CautionSign {
-  translation -91.9275 48.9391 0
-  signBoards [
-    CautionPanel {
-      translation 0 0 -0.17
-      signImage [
-        "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/objects/traffic/protos/textures/signs/us/turn_left.jpg"
-      ]
-    }
-  ]
-}
-CautionSign {
-  translation 84.1154 -26.9475 0
-  rotation 0 0 1 0.6545
-  name "caution sign(4)"
-  signBoards [
-    CautionPanel {
-      translation 0 0 -0.17
-      signImage [
-        "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/objects/traffic/protos/textures/signs/us/cross_roads.jpg"
-      ]
-    }
-  ]
-}
-SpeedLimitSign {
-  translation -113.192 20.4404 0
-  rotation 0 0 1 0.9163
-  signBoards [
-    SpeedLimitPanel {
-      translation 0.023 0 0
-      signImage [
-        "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/objects/traffic/protos/textures/signs/us/speed_limit_55.jpg"
-      ]
-    }
-  ]
-}
-AdvertisingBoard {
-  translation 50.8635 -59.7458 0
-  rotation 0 0 1 2.61799
-  frontTexture [
-    "C:/Users/R2D2/Downloads/WhatsApp Image 2022-11-28 at 15.54.35.jpeg"
-  ]
-  backTexture []
-  displayBackLight TRUE
-  displayWidth 8
-  displayHeight 6
-  frameThickness 0.9
-  frameColor 0.52549 0.52549 0.52549
-  poleNumber 2
-  poleHeight 11
-  baseRatio 5.8
+GenericTrafficLight {
+  translation -51.1 50.66 -0.12
+  rotation 0 0 1 1.5708
+  name "generic traffic light(1)"
+  greenTime 30
+  redTime 10
+  state "green"
 }
 Crossroad {
   translation 76.500107 93 0
@@ -660,10 +466,11 @@ Crossroad {
   ]
 }
 GenericTrafficLight {
-  translation 34.93 26.37 0.11
-  rotation -9.58981e-09 9.58984e-09 -1 -1.5707853071795865
+  translation 10.28 -51.01 0
+  rotation -1.49769e-14 -9.58977e-09 1 3.14158
   startGreen FALSE
-  greenTime 1
+  greenTime 30
+  redTime 10
   state "red"
 }
 Crossroad {
@@ -725,4 +532,9 @@ Crossroad {
     "10"
     "17"
   ]
+}
+StopSign {
+  translation -51.23 123.15 0
+  rotation 0 0 1 1.5708
+  name "stop sign(1)"
 }

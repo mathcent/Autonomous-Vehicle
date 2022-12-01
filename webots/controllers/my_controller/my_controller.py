@@ -1,4 +1,3 @@
-
 from controller import Camera
 from vehicle import Driver
 from matplotlib import pyplot as plt
@@ -59,7 +58,7 @@ def pre_process(input_image, net):
 	return outputs
 
 
-def post_process(input_image, outputs,velocidadeLimite,driver,placaPare):
+def post_process(input_image, outputs, velocidadeLimite, driver, placaPare, pedestre):
 	# Lists to hold respective values while unwrapping.
 	class_ids = []
 	confidences = []
@@ -123,11 +122,11 @@ def post_process(input_image, outputs,velocidadeLimite,driver,placaPare):
 		draw_label(input_image, label, left, top)
 		
 		if (classes[class_ids[i]]) == "traffic light":
-			#print(classes[class_ids[i]], confidences[i])
-			#metric_traffic_light.append(confidences[i])
-			#print((right-left)*(bottom-top))
+			print(classes[class_ids[i]], confidences[i])
+			metric_traffic_light.append(confidences[i])
+			print((right-left)*(bottom-top))
 			color = ('b','g','r')
-			#ax.clear()
+			ax.clear()
 			for i,col in enumerate(color):
 				histr = cv2.calcHist([cropped_image],[i],None,[256],[0,256])
 				#ax.plot(histr,color = col)
@@ -137,7 +136,7 @@ def post_process(input_image, outputs,velocidadeLimite,driver,placaPare):
 					print((right-left)*(bottom-top))
 					if hist_verde > 130:
 						driver.setCruisingSpeed(velocidadeLimite)
-					else:
+					elif hist_verde <= 130:
 						velocidade = controleSemaforo((right-left)*(bottom-top))
 						driver.setCruisingSpeed(velocidade)
            			
@@ -149,119 +148,148 @@ def post_process(input_image, outputs,velocidadeLimite,driver,placaPare):
 				placaPare = True				
 				velocidade = controlePlacaPare((right-left)*(bottom-top))
 				driver.setCruisingSpeed(velocidade)
-				#print(classes[class_ids[i]], confidences[i])
-				#metric_stop_sign.append(confidences[i])
-				#print((right-left)*(bottom-top))
+				print(classes[class_ids[i]], confidences[i])
+				metric_stop_sign.append(confidences[i])
+				print((right-left)*(bottom-top))
 			elif not placaPare:
 				print("segue")
 				driver.setCruisingSpeed(velocidadeLimite)
 
 			
 		elif (classes[class_ids[i]]) == "person":
-			#print(classes[class_ids[i]], confidences[i])
-			#metric_person.append(confidences[i])
-			velocidade = controlePedestre((right-left)*(bottom-top))
-			driver.setCruisingSpeed(velocidade)
 			print((right-left)*(bottom-top))
-			continue
-	return input_image,placaPare
+			if (right-left)*(bottom-top) < 3000:
+				pedestre = True				
+				velocidade = controlePedestre((right-left)*(bottom-top))
+				driver.setCruisingSpeed(velocidade)
+				print(classes[class_ids[i]], confidences[i])
+				metric_person.append(confidences[i])
+				print((right-left)*(bottom-top))
+			elif not pedestre:
+				print("segue")
+				driver.setCruisingSpeed(velocidadeLimite)
+
+
+	return input_image,placaPare,pedestre
 
 
 if __name__ == '__main__':
-	# Load class names.
-	i = 0
-	fig, ax = plt.subplots()
-	driver = Driver()
-	camera = Camera("camera")
-	gps = GPS("gps")
-	timestep = int(driver.getBasicTimeStep())	
-	camera.enable(timestep)
-	gps.enable(timestep)
-	image = camera.getImage()
-	classesFile = "coco.names"
-	classes = None
-	#print(timestep)
-	x = []
-	y = []
+    # Load class names.
+    i = 0
+    fig, ax = plt.subplots()
+    driver = Driver()
+    camera = Camera("camera")
+    gps = GPS("gps")
+    timestep = int(driver.getBasicTimeStep())	
+    camera.enable(timestep)
+    gps.enable(timestep)
+    image = camera.getImage()
+    classesFile = "coco.names"
+    classes = None
 
-	with open(classesFile, 'rt') as f:
-		classes = f.read().rstrip('\n').split('\n')
-		
-	# Give the weight files to the model and load the network using them.
-	modelWeights = "models/yolov5m.onnx"
-	net = cv2.dnn.readNet(modelWeights)
-	# Load image.
-	frame = cv2.imread(image)
-	driver.setCruisingSpeed(70)
+    metric_traffic_light = []
+    metric_stop_sign = []
+    metric_person = []
 
-	#Para a logica do controle
-	placaPare = False
-	velocidadeLimite = 70
-	angulo = 0 
-	anguloAntigo = 0
-	i=0	
+    contador_pare = 0
+    contador_pedestre = 0
 
-	while (driver.step() != -1):
-		if placaPare and driver.getCurrentSpeed()<1:
-			placaPare = False
-			time.sleep(3)
-			driver.setCruisingSpeed(velocidadeLimite)
-			
-		cameraData = camera.getImage()		
-		image = np.frombuffer(cameraData, np.uint8).reshape((camera.getHeight(), camera.getWidth(), 4))
-		image = image[:, :, :3]
-		if False:
-			try:
-			#detecta as linhas e devolve o erro
-				erro = criaImagem(image)
-				#calcula o angulo que o volante deve virar
-				angulo = controleLinha(erro,anguloAntigo)
-				driver.setSteeringAngle(angulo)
-				anguloAntigo = angulo
-			except:
-				#print("saiu da rua!") 
-				continue
-				#driver.setSteeringAngle(controleLinha(-anguloAntigo))				
-		i += 1
+    #print(timestep)
+    x = []
+    y = []
 
-		if i%10 ==0:
-			cameraData = camera.getImage()
-			#imageRGB = [cameraData[i] for i in range(0, camera.getHeight()*camera.getWidth()*3)]
-			#imageRGB = bytes(imageRGB)
-		
-			#convertendo bytes para np array
-			image = np.frombuffer(cameraData, np.uint8).reshape((camera.getHeight(), camera.getWidth(), 4))
-			#print(image.shape)
-			
-			#Elimina o quarto canal da imagem
-			image = image[:, :, :3]
-			
-			#print(image.shape)
-			
-			cv2.imwrite("frame.png", image)
-			
-			# Load video.
-			#frame = cv2.VideoCapture('video_teste.mp4')
-			
-			# Process image.
-			detections = pre_process(image, net)
-			img,placaPare = post_process(image.copy(), detections,velocidadeLimite,driver,placaPare)
-			
-			# Put efficiency information. The function getPerfProfile returns the overall time for inference(t) and the timings for each of the layers(in layersTimes)
-			t, _ = net.getPerfProfile()
-			label = 'Inference time: %.2f ms' % (t * 1000.0 / cv2.getTickFrequency())
-			#print(label)
-			#cv2.putText(img, label, (20, 40), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
-			
-			#cv2.imshow('Output', img)
-			#cv2.waitKey(1)
+    with open(classesFile, 'rt') as f:
+        classes = f.read().rstrip('\n').split('\n')
+        
+    # Give the weight files to the model and load the network using them.
+    modelWeights = "models/yolov5m.onnx"
+    net = cv2.dnn.readNet(modelWeights)
+    # Load image.
+    frame = cv2.imread(image)
+    driver.setCruisingSpeed(70)
 
-			#media_farol = np.mean(metric_traffic_light)
-			#media_placa_pare = np.mean(metric_stop_sign)
-			#media_person = np.mean(metric_person)
-			#print('media_farol')
-			#print(media_farol)
-			#print('media_placa_pare')
-			#print(media_placa_pare)
-			#print('media_person')
-			#print(media_person)
+    #Para a logica do controle
+    placaPare = False
+    pedestre = False
+    velocidadeLimite = 70
+    angulo = 0 
+    anguloAntigo = 0
+    i=0	
+
+    while (driver.step() != -1):
+        if placaPare and driver.getCurrentSpeed()<1:
+            placaPare = False
+            time.sleep(3)
+            contador_pare = contador_pare + 1
+            print(contador_pare)
+            driver.setCruisingSpeed(velocidadeLimite)
+
+        elif pedestre and driver.getCurrentSpeed()<1:
+            pedestre = False
+            time.sleep(3)
+            contador_pedestre = contador_pedestre + 1
+            print(contador_pedestre)
+            driver.setCruisingSpeed(velocidadeLimite)
+            
+        cameraData = camera.getImage()		
+        image = np.frombuffer(cameraData, np.uint8).reshape((camera.getHeight(), camera.getWidth(), 4))
+        image = image[:, :, :3]
+        if True:
+            try:
+            #detecta as linhas e devolve o erro
+                erro = criaImagem(image)
+                #calcula o angulo que o volante deve virar
+                angulo = controleLinha(erro,anguloAntigo)
+                driver.setSteeringAngle(angulo)
+                anguloAntigo = angulo
+            except:
+                #print("saiu da rua!") 
+                continue
+                #driver.setSteeringAngle(controleLinha(-anguloAntigo))				
+        i += 1
+
+        if i%10 ==0:
+            cameraData = camera.getImage()
+            #imageRGB = [cameraData[i] for i in range(0, camera.getHeight()*camera.getWidth()*3)]
+            #imageRGB = bytes(imageRGB)
+        
+            #convertendo bytes para np array
+            image = np.frombuffer(cameraData, np.uint8).reshape((camera.getHeight(), camera.getWidth(), 4))
+            #print(image.shape)
+            
+            #Elimina o quarto canal da imagem
+            image = image[:, :, :3]
+            
+            #print(image.shape)
+            
+            cv2.imwrite("frame.png", image)
+            
+            # Load video.
+            #frame = cv2.VideoCapture('video_teste.mp4')
+            
+            # Process image.
+            detections = pre_process(image, net)
+            img,placaPare, pedestre = post_process(image.copy(), detections,velocidadeLimite,driver,placaPare, pedestre)
+            
+            # Put efficiency information. The function getPerfProfile returns the overall time for inference(t) and the timings for each of the layers(in layersTimes)
+            t, _ = net.getPerfProfile()
+            label = 'Inference time: %.2f ms' % (t * 1000.0 / cv2.getTickFrequency())
+            #print(label)
+            #cv2.putText(img, label, (20, 40), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
+            
+            #cv2.imshow('Output', img)
+            #cv2.waitKey(1)
+
+            media_farol = np.mean(metric_traffic_light)
+            media_placa_pare = np.mean(metric_stop_sign)
+            media_person = np.mean(metric_person)
+            print('media_farol')
+            print(media_farol)
+            print('media_placa_pare')
+            print(media_placa_pare)
+            print('media_person')
+            print(media_person)
+            print('contador placa de pare')
+            print(contador_pare)
+            print('contador pedestre')
+            print(contador_pedestre)
